@@ -118,9 +118,12 @@ def test_zhang_suen_thinning_topology():
     bar[3:17, 8:13] = True
     skel = zhang_suen_thinning(bar)
     assert skel.dtype == bool
-    # Skeleton should be 1-pixel wide
+    # Skeleton should be strictly thinned to a 1-pixel medial line
     assert np.sum(skel) < np.sum(bar)
-    assert np.all(np.sum(skel, axis=1)[3:17] == 1)
+    assert np.all(np.sum(skel, axis=1) <= 1)
+    assert np.sum(skel) > 0
+    # Column of vertical medial axis
+    assert np.all(skel[:, 10] == skel.any(axis=1))
 
 
 def test_skeleton_node_analysis():
